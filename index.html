@@ -33,76 +33,97 @@
                 border: none;
             }
         }
+
+        /* Mobile-specific styles for the table */
+        @media (max-width: 640px) {
+            .invoice-table thead {
+                display: none; /* Hide the table header on mobile */
+            }
+
+            .invoice-table tbody, .invoice-table tr, .invoice-table td {
+                display: block; /* Make table elements behave as blocks */
+                width: 100%;
+            }
+
+            .invoice-table td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            .invoice-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 1rem;
+                width: calc(50% - 1.5rem);
+                text-align: left;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            .invoice-table td:nth-child(1) {
+                border-top: 2px solid #e5e7eb;
+            }
+        }
     </style>
 </head>
-<body class="p-4 md:p-8 flex justify-center items-start">
-    <div class="invoice-container bg-white p-6 md:p-10 rounded-2xl shadow-xl max-w-2xl w-full border border-gray-200">
+<body class="p-4 flex justify-center items-start">
+    <div class="invoice-container bg-white p-6 rounded-2xl shadow-xl w-full border border-gray-200">
 
         <!-- Header Section -->
-        <header class="flex justify-between items-center mb-8 border-b-2 pb-6">
+        <header class="flex flex-col mb-8 border-b-2 pb-6">
             <div>
-                <div class="text-4xl font-bold text-gray-800">
+                <div class="text-3xl font-bold text-gray-800">
                     Sab Ventures
                 </div>
                 <p class="text-sm text-gray-600">0269670734 / 0530719925</p>
                 <p class="text-sm text-gray-600">Mamprobi, Accra</p>
             </div>
-            <div class="text-right">
-                <h1 class="text-3xl font-extrabold text-emerald-600">INVOICE</h1>
+            <div class="text-right mt-4">
+                <h1 class="text-2xl font-extrabold text-emerald-600">INVOICE</h1>
                 <p class="text-sm text-gray-500">
                     <span class="font-semibold">Invoice #</span>
                     <input type="text" value="INV-001" class="w-24 text-right bg-transparent focus:outline-none focus:border focus:border-gray-300 focus:rounded-md">
                 </p>
+                <p class="text-sm text-gray-500 mt-1">
+                    <span class="font-semibold">Date:</span>
+                    <input type="date" id="invoiceDate" class="w-28 text-right bg-transparent focus:outline-none focus:border focus:border-gray-300 focus:rounded-md">
+                </p>
             </div>
         </header>
 
-        <!-- Bill To & Invoice Details Section -->
-        <section class="grid grid-cols-1 gap-8 mb-8">
-            <!-- Bill To -->
-            <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">BILL TO:</h2>
-                <div class="flex flex-col space-y-2">
-                    <input type="text" placeholder="Client Name" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-            </div>
-
-            <!-- Invoice Details -->
-            <div class="md:text-left flex flex-col items-start space-y-2">
-                <div class="flex items-center space-x-2 w-full">
-                    <span class="font-semibold text-gray-700 w-28 text-left">Creation Date:</span>
-                    <input type="date" id="invoiceDate" class="p-2 border border-gray-300 rounded-md flex-grow focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
-                <div class="flex items-center space-x-2 w-full">
-                    <span class="font-semibold text-gray-700 w-28 text-left">Due Date:</span>
-                    <input type="date" id="invoiceDueDate" class="p-2 border border-gray-300 rounded-md flex-grow focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                </div>
+        <!-- Bill To Section -->
+        <section class="mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">BILL TO:</h2>
+            <div class="flex flex-col space-y-2">
+                <input type="text" placeholder="Client Name" class="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             </div>
         </section>
 
         <!-- Line Items Table -->
         <section class="mb-8">
-            <table class="w-full text-left table-fixed">
+            <table class="w-full text-left table-auto invoice-table">
                 <thead>
-                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left w-[40%]">Description</th>
-                        <th class="py-3 px-6 text-center w-[20%]">Qty</th>
-                        <th class="py-3 px-6 text-center w-[20%]">Price (GH₵)</th>
-                        <th class="py-3 px-6 text-right w-[20%]">Total</th>
+                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold leading-normal">
+                        <th class="py-3 px-3 text-left w-[40%]">Description</th>
+                        <th class="py-3 px-3 text-center w-[20%]">Qty</th>
+                        <th class="py-3 px-3 text-center w-[20%]">Price (GH₵)</th>
+                        <th class="py-3 px-3 text-right w-[20%]">Total</th>
                     </tr>
                 </thead>
                 <tbody id="invoiceTableBody" class="text-gray-600 text-sm font-light">
                     <!-- Initial row for a single item -->
                     <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="py-3 px-6 text-left whitespace-nowrap">
+                        <td class="py-3 px-3 text-left whitespace-normal" data-label="Description">
                             <input type="text" placeholder="Item/Service Description" class="w-full bg-transparent focus:outline-none">
                         </td>
-                        <td class="py-3 px-6 text-center">
+                        <td class="py-3 px-3 text-center" data-label="Qty">
                             <input type="number" value="1" min="0" class="qty w-16 text-center bg-transparent focus:outline-none">
                         </td>
-                        <td class="py-3 px-6 text-center">
+                        <td class="py-3 px-3 text-center" data-label="Price (GH₵)">
                             <input type="number" value="0.00" min="0" step="0.01" class="price w-20 text-center bg-transparent focus:outline-none">
                         </td>
-                        <td class="py-3 px-6 text-right">
+                        <td class="py-3 px-3 text-right" data-label="Total">
                             <span class="item-total">GH₵0.00</span>
                         </td>
                     </tr>
@@ -115,7 +136,7 @@
 
         <!-- Totals Section -->
         <section class="flex justify-end">
-            <div class="w-full md:w-1/2 bg-gray-100 p-6 rounded-xl">
+            <div class="w-full bg-gray-100 p-6 rounded-xl">
                 <div class="flex justify-between mb-2">
                     <span class="font-medium text-gray-700">Subtotal</span>
                     <span id="subtotal" class="font-semibold">GH₵0.00</span>
@@ -137,7 +158,7 @@
         </section>
 
         <!-- Action Buttons Section (No print) -->
-        <footer class="mt-8 flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4">
+        <footer class="mt-8 flex flex-col justify-end space-y-4">
             <button onclick="clearInvoice()" class="no-print px-6 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors duration-200 font-semibold shadow-lg">
                 Clear Invoice
             </button>
@@ -186,16 +207,16 @@
             const newRow = document.createElement('tr');
             newRow.className = 'border-b border-gray-200 hover:bg-gray-50';
             newRow.innerHTML = `
-                <td class="py-3 px-6 text-left whitespace-nowrap">
+                <td class="py-3 px-3 text-left whitespace-normal" data-label="Description">
                     <input type="text" placeholder="Item/Service Description" class="w-full bg-transparent focus:outline-none">
                 </td>
-                <td class="py-3 px-6 text-center">
+                <td class="py-3 px-3 text-center" data-label="Qty">
                     <input type="number" value="1" min="0" class="qty w-16 text-center bg-transparent focus:outline-none">
                 </td>
-                <td class="py-3 px-6 text-center">
+                <td class="py-3 px-3 text-center" data-label="Price (GH₵)">
                     <input type="number" value="0.00" min="0" step="0.01" class="price w-20 text-center bg-transparent focus:outline-none">
                 </td>
-                <td class="py-3 px-6 text-right">
+                <td class="py-3 px-3 text-right" data-label="Total">
                     <span class="item-total">GH₵0.00</span>
                 </td>
             `;
@@ -234,7 +255,7 @@
         
         // Wait for the DOM to be fully loaded before running the script
         document.addEventListener('DOMContentLoaded', function () {
-            // Set today's date and due date
+            // Set today's date
             const today = new Date();
             document.getElementById('invoiceDate').valueAsDate = today;
             
